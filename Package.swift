@@ -5,8 +5,16 @@ import PackageDescription
 
 let package = Package(
     name: "UIComponents",
+    platforms: [
+        .iOS(.v26),
+        .macOS(.v26)
+    ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
+        .library(
+            name: "SharedComponents",
+            targets: ["SharedComponents"]
+        ),
         .library(
             name: "UIComponents",
             targets: ["UIComponents"]
@@ -16,11 +24,16 @@ let package = Package(
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "UIComponents"
+            name: "SharedComponents",
+            path: "Sources/SharedComponents"
+        ),
+        .target(
+            name: "UIComponents",
+            path: "Sources/UIComponents"
         ),
         .testTarget(
             name: "UIComponentsTests",
-            dependencies: ["UIComponents"]
+            dependencies: ["UIComponents", "SharedComponents"]
         ),
     ]
 )
