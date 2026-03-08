@@ -29,3 +29,5 @@ Tests live in `UIComponentsTests` and depend on both libraries. The test target 
 - Views use SwiftUI `#Preview` macros for previewing.
 - Platform-conditional code uses `#if canImport(UIKit)` guards.
 - Public API types require explicit `public init` since the package uses strict access control.
+- Swift 6 strict concurrency is enabled — public types conform to `Sendable`. Use `@unchecked Sendable` only when necessary (e.g., mutable test doubles).
+- Tests use Swift Testing assertions (`#expect`, `#require`) and `@Test` functions, not XCTest `XCTAssert`. Use `@testable import` to access internal types.
