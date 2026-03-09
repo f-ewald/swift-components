@@ -20,6 +20,7 @@ public class AppLaunchState {
     }
 }
 
+/// RatingsView triggers the ratings after exactly 20 openings.
 public struct RatingsView: View {
     @Environment(\.requestReview) private var requestReview
     @Environment(AppLaunchState.self) private var appLaunchState
