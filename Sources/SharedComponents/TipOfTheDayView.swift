@@ -9,11 +9,14 @@ import SwiftUI
 
 public struct TipOfTheDayView: View {
     let message: String
+    let autoCloseAfter: Duration?
     @Binding var isVisible: Bool
-    
-    public init(message: String, isVisible: Binding<Bool>) {
+    @State private var startDate: Date?
+
+    public init(message: String, isVisible: Binding<Bool>, autoCloseAfter: Duration? = nil) {
         self.message = message
         self._isVisible = isVisible
+        self.autoCloseAfter = autoCloseAfter
     }
 
     public var body: some View {
@@ -55,11 +58,37 @@ public struct TipOfTheDayView: View {
             .padding(.bottom, 16)
 
             // Close button
-            Button {
-                withAnimation(.spring(duration: 0.3)) {
-                    isVisible = false
+            if autoCloseAfter != nil {
+                TimelineView(.animation) { timeline in
+                    closeButtonView(progress: computeProgress(at: timeline.date))
                 }
-            } label: {
+            } else {
+                closeButtonView(progress: nil)
+            }
+        }
+        .padding(.horizontal, 0)
+        .onAppear {
+            if autoCloseAfter != nil {
+                startDate = Date()
+            }
+        }
+        .task(id: autoCloseAfter) {
+            guard let autoCloseAfter else { return }
+            try? await Task.sleep(for: autoCloseAfter)
+            withAnimation(.spring(duration: 0.3)) {
+                isVisible = false
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func closeButtonView(progress: Double?) -> some View {
+        Button {
+            withAnimation(.spring(duration: 0.3)) {
+                isVisible = false
+            }
+        } label: {
+            ZStack {
                 Image(systemName: "xmark.circle.fill")
                     .font(.title3)
                     .symbolRenderingMode(.palette)
@@ -67,13 +96,31 @@ public struct TipOfTheDayView: View {
                         Color("TipOfTheDayText", bundle: .module),
                         Color("TipOfTheDaySecondaryText", bundle: .module).opacity(0.3)
                     )
+
+                if let progress {
+                    Circle()
+                        .trim(from: 0, to: CGFloat(progress))
+                        .stroke(
+                            Color("TipOfTheDayText", bundle: .module),
+                            style: StrokeStyle(lineWidth: 2, lineCap: .round)
+                        )
+                        .rotationEffect(.degrees(-90))
+                        .frame(width: 22, height: 22)
+                }
             }
-            .buttonStyle(.plain)
-            .accessibilityIdentifier("tip.close")
-            .padding(10)
-            .sensoryFeedback(.success, trigger: isVisible)
         }
-        .padding(.horizontal, 0)
+        .buttonStyle(.plain)
+        .accessibilityIdentifier("tip.close")
+        .padding(10)
+        .sensoryFeedback(.success, trigger: isVisible)
+    }
+
+    private func computeProgress(at currentDate: Date) -> Double {
+        guard let startDate, let autoCloseAfter else { return 0 }
+        let totalSeconds = Double(autoCloseAfter.components.seconds)
+            + Double(autoCloseAfter.components.attoseconds) / 1_000_000_000_000_000_000
+        let elapsed = currentDate.timeIntervalSince(startDate)
+        return min(max(elapsed / totalSeconds, 0), 1.0)
     }
 }
 
@@ -146,4 +193,23 @@ public struct TipOfTheDayView: View {
     }
     .listStyle(.plain)
     .preferredColorScheme(.dark)
+}
+
+#Preview("Tip of the day (Auto-close)") {
+    @Previewable @State var isVisible: Bool = true
+    VStack {
+        if isVisible {
+            TipOfTheDayView(
+                message: "This tip will automatically close in 5 seconds.",
+                isVisible: $isVisible,
+                autoCloseAfter: .seconds(5)
+            )
+            .transition(.move(edge: .top).combined(with: .opacity))
+        }
+
+        Button("Reset") { isVisible = true }
+            .buttonStyle(.borderedProminent)
+    }
+    .animation(.spring(duration: 0.35), value: isVisible)
+    .padding()
 }
