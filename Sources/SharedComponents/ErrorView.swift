@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+/// A view modifier for presenting error alerts from an optional string binding.
 extension View {
     public func errorAlert(message: Binding<String?>) -> some View {
         alert("Error", isPresented: Binding(
