@@ -36,7 +36,6 @@ struct StarRatingView: View {
                             #endif
                             rating = star
                         }
-                
             }
         }
     }
@@ -55,20 +54,45 @@ struct StarRatingField: View {
 
 /// Feedback provided by the user
 public struct Feedback: Codable, Sendable {
+    public let type: String
+    public let name: String
+    public let email: String
     public let rating: Int
     public let message: String
 
-    public init(rating: Int, message: String) {
+    public init(type: String, name: String, email: String, rating: Int, message: String) {
+        self.type = type
+        self.name = name
+        self.email = email
         self.rating = rating
         self.message = message
     }
 }
 
+/// Feedback view
 struct FeedbackView: View {
     @Environment(\.dismiss) private var dismiss
+    
     @State var rating: Int = 0
     @State var message: String = ""
+    @State var name: String = ""
+    @State var email: String = ""
+    @State var feedback: String = "Feedback"
     
+    let feedbackType: [String] = [
+        "Bug Report",
+        "Feature Request",
+        "Feedback",
+        "Other",
+    ]
+    
+    /// Returns `true` when all required fields contain non-whitespace text.
+    private var isFormValid: Bool {
+        !name.trimmingCharacters(in: .whitespaces).isEmpty
+            && !email.trimmingCharacters(in: .whitespaces).isEmpty
+            && !message.trimmingCharacters(in: .whitespaces).isEmpty
+    }
+
     let onDismiss: (() -> Void)?
     let onSend: (_ feedback: Feedback) -> Void
     
@@ -81,8 +105,15 @@ struct FeedbackView: View {
         NavigationStack {
             Form {
                 Section(footer: Text("Your feedback helps to improve this app.")) {
-                    StarRatingField(label: "Rate your experience", rating: $rating)
-                    TextField("Your Feedback", text: $message, axis: .vertical)
+                    Picker("Type", selection: $feedback) {
+                        ForEach(feedbackType, id: \.self) { feedbackType in
+                            Text("\(feedbackType)")
+                        }
+                    }
+                    .pickerStyle(.menu)
+                    TextField("Name", text: $name)
+                    TextField("E-Mail", text: $email)
+                    TextField("Your Message", text: $message, axis: .vertical)
                         .lineLimit(10, reservesSpace: true)
                 }
             }
@@ -97,12 +128,16 @@ struct FeedbackView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Send") {
                         let feedback = Feedback(
+                            type: feedback,
+                            name: name,
+                            email: email,
                             rating: rating,
                             message: message,
                         )
                         onSend(feedback)
                         dismiss()
                     }
+                    .disabled(!isFormValid)
                 }
             }
         }
@@ -116,5 +151,5 @@ struct FeedbackView: View {
 }
 
 #Preview("Dismiss") {
-    FeedbackView(onDismiss: { print("Dismissed") }, onSend: {_ in print("Sent") })
+    FeedbackView(onDismiss: { print("Dismissed") }, onSend: {feedback in print("Sent \(feedback)") })
 }
