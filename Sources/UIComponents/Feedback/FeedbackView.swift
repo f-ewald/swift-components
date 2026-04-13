@@ -70,7 +70,7 @@ public struct Feedback: Codable, Sendable {
 }
 
 /// Feedback view
-struct FeedbackView: View {
+public struct FeedbackView: View {
     @Environment(\.dismiss) private var dismiss
     
     @State var rating: Int = 0
@@ -96,12 +96,12 @@ struct FeedbackView: View {
     let onDismiss: (() -> Void)?
     let onSend: (_ feedback: Feedback) -> Void
     
-    init(onDismiss: (() -> Void)? = nil, onSend: @escaping (_ feedback: Feedback) -> Void) {
+    public init(onDismiss: (() -> Void)? = nil, onSend: @escaping (_ feedback: Feedback) -> Void) {
         self.onDismiss = onDismiss
         self.onSend = onSend
     }
     
-    var body: some View {
+    public var body: some View {
         NavigationStack {
             Form {
                 Section(footer: Text("Your feedback helps to improve this app.")) {
