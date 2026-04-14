@@ -53,7 +53,7 @@ struct StarRatingField: View {
 }
 
 /// Feedback provided by the user
-public struct Feedback: Codable, Sendable {
+public struct Feedback: Codable, Sendable, CustomStringConvertible {
     public let type: String
     public let name: String
     public let email: String
@@ -66,6 +66,15 @@ public struct Feedback: Codable, Sendable {
         self.email = email
         self.rating = rating
         self.message = message
+    }
+    
+    /// Custom string description in JSON encoding
+    public var description: String {
+        let encoder = JSONEncoder()
+        guard let encoded = try? encoder.encode(self) else {
+            return "Encoding failure"
+        }
+        return String(data: encoded, encoding: .utf8) ?? "Encoding failed"
     }
 }
 
@@ -104,7 +113,7 @@ public struct FeedbackView: View {
     public var body: some View {
         NavigationStack {
             Form {
-                Section(footer: Text("Your feedback helps to improve this app.")) {
+                Section(footer: Text("Your feedback helps to improve the app.")) {
                     Picker("Type", selection: $feedback) {
                         ForEach(feedbackType, id: \.self) { feedbackType in
                             Text("\(feedbackType)")
@@ -137,6 +146,7 @@ public struct FeedbackView: View {
                         onSend(feedback)
                         dismiss()
                     }
+                    .buttonStyle(.borderedProminent)
                     .disabled(!isFormValid)
                 }
             }

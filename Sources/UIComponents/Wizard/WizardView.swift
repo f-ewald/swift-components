@@ -7,14 +7,21 @@
 
 import SwiftUI
 
-struct WizardStep {
+/// Container for wizard json data
+struct WizardContainer: Decodable {
+    let steps: [WizardStep]
+}
+
+/// A single step for the wizard
+public struct WizardStep: Codable {
     let title: String
     let subtitle: String
     let imageName: String?
     let buttonLabel: String
+    let version: SemVer
 }
 
-struct WizardView: View {
+public struct WizardView: View {
     let steps: [WizardStep]
     var onComplete: () -> Void
     
@@ -23,7 +30,12 @@ struct WizardView: View {
     private var step: WizardStep { steps[currentStep] }
     private var isLastStep: Bool { currentStep == steps.count - 1 }
     
-    var body: some View {
+    public init(steps: [WizardStep], onComplete: @escaping () -> Void) {
+        self.steps = steps
+        self.onComplete = onComplete
+    }
+    
+    public var body: some View {
         ZStack(alignment: .bottom) {
             // Content
             VStack(spacing: 32) {
@@ -106,9 +118,9 @@ struct WizardView: View {
 
 #Preview {
     WizardView(steps: [
-        WizardStep(title: "Welcome", subtitle: "Here are some new features", imageName: "sun.horizon", buttonLabel: "Get Started"),
-        WizardStep(title: "Add Readings", subtitle: "Log your readings each morning", imageName: "plus.circle.fill", buttonLabel: "Next"),
-        WizardStep(title: "You're all set!", subtitle: "Let's start tracking", imageName: "checkmark.seal.fill", buttonLabel: "Done")
+        WizardStep(title: "Feedback", subtitle: "Shake your phone to provide feedback", imageName: "bubble.circle", buttonLabel: "Done", version: SemVer("1.0.0")!),
+        WizardStep(title: "Add Readings", subtitle: "Log your readings each morning", imageName: "plus.circle.fill", buttonLabel: "Next", version: SemVer("1.0.0")!),
+        WizardStep(title: "You're all set!", subtitle: "Let's start tracking", imageName: "checkmark.seal.fill", buttonLabel: "Done", version: SemVer("1.0.0")!)
     ]) {
         // handle completion
     }
