@@ -31,7 +31,12 @@ public struct WizardView: View {
     private var isLastStep: Bool { currentStep == steps.count - 1 }
     
     public init(steps: [WizardStep], onComplete: @escaping () -> Void) {
-        self.steps = steps
+        // Safeguard against not defined steps
+        if steps.count == 0 {
+            self.steps = [WizardStep(title: "ERROR", subtitle: "No steps are defined. Please define them in wizard.json", imageName: "exclamationmark.triangle", buttonLabel: "OK", version: SemVer("0.0.1")!)]
+        } else {
+            self.steps = steps
+        }
         self.onComplete = onComplete
     }
     
