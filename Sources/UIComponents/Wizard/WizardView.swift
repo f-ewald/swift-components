@@ -23,6 +23,7 @@ public struct WizardStep: Codable {
 
 public struct WizardView: View {
     let steps: [WizardStep]
+    let gradientColors: [Color]
     var onComplete: () -> Void
     
     @State private var currentStep = 0
@@ -30,13 +31,20 @@ public struct WizardView: View {
     private var step: WizardStep { steps[currentStep] }
     private var isLastStep: Bool { currentStep == steps.count - 1 }
     
-    public init(steps: [WizardStep], onComplete: @escaping () -> Void) {
+    /// Instantiates a new WizardView with given steps, colors and callbacks
+    ///
+    /// - Parameters:
+    ///     - steps: Ordered list of wizard steps
+    ///     - gradientColors: Default colors if none are given
+    ///     - onComplete: Callback that is called after the wizard completes
+    public init(steps: [WizardStep], gradientColors: [Color]? = nil, onComplete: @escaping () -> Void) {
         // Safeguard against not defined steps
         if steps.count == 0 {
             self.steps = [WizardStep(title: "ERROR", subtitle: "No steps are defined. Please define them in wizard.json", imageName: "exclamationmark.triangle", buttonLabel: "OK", version: SemVer("0.0.1")!)]
         } else {
             self.steps = steps
         }
+        self.gradientColors = gradientColors ?? [.blue, .purple]
         self.onComplete = onComplete
     }
     
@@ -53,9 +61,7 @@ public struct WizardView: View {
                         .frame(height: 180)
                         .overlay {
                             LinearGradient(
-                                colors: [
-                                    .blue, .purple
-                                ],
+                                colors: gradientColors,
                                 startPoint: .top,
                                 endPoint: .bottom
                             )
