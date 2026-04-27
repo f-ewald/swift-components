@@ -12,14 +12,15 @@ public struct WizardService {
 
     /// Returns true if the WizardView should be shown.
     public static func shouldShowWizard() -> Bool {
-        let currentVersion = currentAppVersion()
+        let currentVersion: SemVer = currentAppVersion()
         let lastSeen = UserDefaults.standard.string(forKey: lastSeenVersionKey)
+        
         return lastSeen != String(describing: currentVersion)
     }
     
     /// Load steps equal or greater than current version
     public static func loadSteps() -> [WizardStep] {
-        let minStepVersion = currentAppVersion()
+        let minStepVersion: SemVer = currentAppVersion()
         
         guard let url = Bundle.main.url(forResource: "wizard", withExtension: "json") else {
             #if DEBUG
@@ -49,6 +50,10 @@ public struct WizardService {
     }
 
     private static func currentAppVersion() -> SemVer {
-        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? SemVer ?? SemVer("1.0.0")!
+        let currentVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"]
+        if let currentVersionString = currentVersion as? String {
+            return SemVer(currentVersionString) ?? SemVer("1.0.0")!
+        }
+        return SemVer("1.0.0")!
     }
 }
