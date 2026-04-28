@@ -19,6 +19,12 @@ struct SemVer: Codable, Comparable, CustomStringConvertible {
         patch = parts[2]
     }
     
+    init(_ major: Int, _ minor: Int, _ patch: Int) {
+        self.major = major
+        self.minor = minor
+        self.patch = patch
+    }
+    
     init(from decoder: Decoder) throws {
         let container = try decoder.singleValueContainer()
         let string = try container.decode(String.self)
