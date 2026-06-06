@@ -8,12 +8,18 @@
 import SwiftUI
 
 /// A hero view with title, image and optional description.
-struct HeroView: View {
+public struct HeroView: View {
     let title: String
     let systemName: String
     var description: String? = nil
     
-    var body: some View {
+    public init(title: String, systemName: String, description: String? = nil) {
+        self.title = title
+        self.systemName = systemName
+        self.description = description
+    }
+    
+    public var body: some View {
         VStack(spacing: 0) {
             Image(systemName: systemName)
                 .font(.system(size: 56))

@@ -248,6 +248,7 @@ public struct StatusBannerView: View {
     }
 }
 
+#if os(iOS)
 #Preview("Both Styles") {
     @Previewable @State var showError = true
     @Previewable @State var showAlert = true
@@ -273,3 +274,4 @@ public struct StatusBannerView: View {
         Text("Station 3")
     }
 }
+#endif

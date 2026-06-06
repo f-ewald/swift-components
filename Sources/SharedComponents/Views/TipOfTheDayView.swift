@@ -51,6 +51,7 @@ public struct TipOfTheDayView: View {
                     .font(.subheadline)
                     .foregroundStyle(Color("TipOfTheDaySecondaryText", bundle: .module))
                     .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityIdentifier("tipOfTheDay.message")
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.top, 20)
@@ -124,6 +125,7 @@ public struct TipOfTheDayView: View {
     }
 }
 
+#if os(iOS) || os(macOS)
 #Preview("Tip of the day") {
     @Previewable @State var isVisible1: Bool = true
     @Previewable @State var isVisible2: Bool = true
@@ -213,3 +215,4 @@ public struct TipOfTheDayView: View {
     .animation(.spring(duration: 0.35), value: isVisible)
     .padding()
 }
+#endif

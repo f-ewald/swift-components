@@ -9,6 +9,7 @@
 import UIKit
 import SwiftUI
 
+#if os(iOS)
 // 1. Extend UIDevice to publish shake notification
 extension UIDevice {
     static let deviceDidShakeNotification = Notification.Name("deviceDidShakeNotification")
@@ -41,4 +42,5 @@ public extension View {
         modifier(DeviceShakeViewModifier(action: action))
     }
 }
+#endif
 #endif

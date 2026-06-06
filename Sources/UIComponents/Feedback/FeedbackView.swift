@@ -119,7 +119,9 @@ public struct FeedbackView: View {
                             Text("\(feedbackType)")
                         }
                     }
+                    #if os(iOS)
                     .pickerStyle(.menu)
+                    #endif
                     TextField("Name", text: $name)
                     TextField("E-Mail", text: $email)
                     TextField("Your Message", text: $message, axis: .vertical)

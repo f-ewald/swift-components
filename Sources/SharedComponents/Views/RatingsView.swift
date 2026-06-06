@@ -22,7 +22,11 @@ public class AppLaunchState {
 
 /// RatingsView triggers the ratings after exactly 20 openings.
 public struct RatingsView: View {
+    #if !os(watchOS)
     @Environment(\.requestReview) private var requestReview
+    #else
+    private var requestReview = {}
+    #endif
     @Environment(AppLaunchState.self) private var appLaunchState
     
     public init() {}
