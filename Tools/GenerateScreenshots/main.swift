@@ -21,7 +21,7 @@ private let outputDirectory = URL(fileURLWithPath: #filePath)
     .appendingPathComponent("docs/screenshots")
 
 @MainActor
-private func renderPNG<V: View>(_ view: V, size: CGSize, scale: CGFloat = 2) -> Data? {
+private func renderPNG<V: View>(_ view: V, size: CGSize, scale: CGFloat = 3) -> Data? {
     let renderer = ImageRenderer(
         content:
             view
@@ -126,7 +126,7 @@ private func run() {
 
     try? FileManager.default.createDirectory(at: outputDirectory, withIntermediateDirectories: true)
 
-    save("HeroView", size: CGSize(width: 360, height: 280)) {
+    save("HeroView", size: CGSize(width: 320, height: 220)) {
         HeroView(
             title: "Track Your Progress",
             systemName: "chart.line.uptrend.xyaxis",
@@ -135,7 +135,7 @@ private func run() {
         .background(Color.white)
     }
 
-    save("LogoVersionView", size: CGSize(width: 320, height: 110)) {
+    save("LogoVersionView", size: CGSize(width: 280, height: 90)) {
         LogoVersionView {
             Image(systemName: "cube.fill")
                 .resizable()
@@ -147,16 +147,16 @@ private func run() {
         .background(Color.white)
     }
 
-    save("PowerUserView", size: CGSize(width: 320, height: 170)) {
+    save("PowerUserView", size: CGSize(width: 280, height: 140)) {
         PowerUserView(appName: "MyApp")
             .background(Color.white)
     }
 
-    save("StatusBannerView", size: CGSize(width: 380, height: 220)) {
+    save("StatusBannerView", size: CGSize(width: 340, height: 200)) {
         StatusBannerDemo()
     }
 
-    save("TipOfTheDayView", size: CGSize(width: 360, height: 150)) {
+    save("TipOfTheDayView", size: CGSize(width: 320, height: 140)) {
         TipOfTheDayView(
             message: "Swipe left on any item to reveal quick actions.",
             isVisible: .constant(true)
@@ -165,7 +165,7 @@ private func run() {
         .background(Color(white: 0.95))
     }
 
-    saveViaWindow("FeedbackView", size: CGSize(width: 380, height: 470)) {
+    saveViaWindow("FeedbackView", size: CGSize(width: 380, height: 420)) {
         FeedbackView(onSend: { _ in })
     }
 
@@ -185,7 +185,7 @@ private func run() {
             version: SemVer(1, 0, 0)
         ),
     ]
-    save("WizardView", size: CGSize(width: 380, height: 700)) {
+    save("WizardView", size: CGSize(width: 300, height: 460)) {
         WizardView(steps: wizardSteps) {}
             .background(Color.white)
     }

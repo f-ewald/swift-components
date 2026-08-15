@@ -28,7 +28,7 @@ Then add the libraries you need to your target:
 
 ### TipOfTheDayView
 
-![TipOfTheDayView](docs/screenshots/TipOfTheDayView.png)
+<img src="docs/screenshots/TipOfTheDayView.png" alt="TipOfTheDayView" width="320">
 
 A dismissible tip card with a gradient background. Supports an optional auto-close timer that displays a circular countdown animation around the close button.
 
@@ -110,7 +110,7 @@ struct SettingsView: View {
 
 ### LogoVersionView
 
-![LogoVersionView](docs/screenshots/LogoVersionView.png)
+<img src="docs/screenshots/LogoVersionView.png" alt="LogoVersionView" width="280">
 
 Displays an app logo with the version and build number read from the main bundle.
 
@@ -127,7 +127,7 @@ LogoVersionView {
 
 ### HeroView
 
-![HeroView](docs/screenshots/HeroView.png)
+<img src="docs/screenshots/HeroView.png" alt="HeroView" width="280">
 
 A centered title/icon/description layout, useful for empty states or feature highlights.
 
@@ -162,7 +162,7 @@ struct ContentView: View {
 
 ### PowerUserView
 
-![PowerUserView](docs/screenshots/PowerUserView.png)
+<img src="docs/screenshots/PowerUserView.png" alt="PowerUserView" width="260">
 
 An easter-egg view that shows a pulsing heart animation with an appreciation message.
 
@@ -172,7 +172,7 @@ PowerUserView(appName: "MyApp")
 
 ### StatusBannerView
 
-![StatusBannerView](docs/screenshots/StatusBannerView.png)
+<img src="docs/screenshots/StatusBannerView.png" alt="StatusBannerView" width="320">
 
 An inline banner for error or info messages, designed to sit inside a `List`. Adapts to light/dark mode automatically.
 
@@ -220,7 +220,7 @@ VStack {
 
 ### FeedbackView / FeedbackService
 
-![FeedbackView](docs/screenshots/FeedbackView.png)
+<img src="docs/screenshots/FeedbackView.png" alt="FeedbackView" width="280">
 
 A feedback form with a type picker, name/email/message fields, plus an HTTP service for submitting feedback.
 
@@ -257,7 +257,7 @@ Text("Shake to undo")
 
 ### WizardView / WizardService
 
-![WizardView](docs/screenshots/WizardView.png)
+<img src="docs/screenshots/WizardView.png" alt="WizardView" width="240">
 
 A multi-step onboarding wizard with step indicators and animated transitions. Steps are defined in a bundled `wizard.json` file and loaded through `WizardService`, which also tracks which steps the user has already seen (by app version) so only *new* steps are shown after an update.
 
