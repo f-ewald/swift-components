@@ -6,9 +6,9 @@ import PackageDescription
 let package = Package(
     name: "UIComponents",
     platforms: [
-        .iOS(.v26),
-        .macOS(.v26),
-        .watchOS(.v26)
+        .iOS(.v18),
+        .macOS(.v15),
+        .watchOS(.v11)
     ],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.

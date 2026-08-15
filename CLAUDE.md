@@ -17,7 +17,7 @@ swift test --filter UIComponentsTests/testName
 
 ## Architecture
 
-This is a Swift Package (swift-tools-version 6.2) targeting iOS 26+, macOS 26+, and watchOS 26+. It uses SwiftUI exclusively and produces two libraries:
+This is a Swift Package (swift-tools-version 6.2) targeting iOS 18+, macOS 15+, and watchOS 11+ — the lowest versions that support every API in use (notably `Color.mix`, introduced in iOS 18/macOS 15/watchOS 11). `WizardView`'s Liquid Glass button style is gated behind `#available(iOS 26, macOS 26, watchOS 26, *)` with a `.borderedProminent` fallback, so the package doesn't require 26 even though it adopts 26-only APIs where available. It uses SwiftUI exclusively and produces two libraries:
 
 - **SharedComponents** — Platform-agnostic SwiftUI views. No UIKit dependency. Organized into `Models/`, `Services/`, `Views/` (e.g. `ErrorView`, `HeroView`, `LogoVersionView`, `PowerUserView`, `RatingsView`, `StatusBannerView`, `TipOfTheDayView`), and `Resources/` (color assets in `Colors.xcassets`). `CloudSettings.swift` lives at the target root.
 - **UIComponents** — iOS/macOS SwiftUI views and utilities. Contains components that may use `#if canImport(UIKit)` for platform-specific code (e.g., shake detection). Organized into subdirectories by feature (`Feedback/`, `Wizard/`, `ShakeDetection/`); `SemVer.swift` lives at the target root.

@@ -119,10 +119,22 @@ public struct WizardView: View {
                         .padding()
                         
                 }
-                .buttonStyle(.glassProminent)
-                
+                .modifier(WizardButtonStyleModifier())
+
             }
             .padding()
+        }
+    }
+}
+
+/// Applies Liquid Glass styling on iOS/macOS/watchOS 26+, falling back to
+/// `.borderedProminent` on older OS versions where `.glassProminent` doesn't exist.
+private struct WizardButtonStyleModifier: ViewModifier {
+    func body(content: Content) -> some View {
+        if #available(iOS 26, macOS 26, watchOS 26, *) {
+            content.buttonStyle(.glassProminent)
+        } else {
+            content.buttonStyle(.borderedProminent)
         }
     }
 }

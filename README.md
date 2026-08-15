@@ -1,6 +1,6 @@
 # UIComponents
 
-A Swift Package providing reusable SwiftUI components for iOS 26+ and macOS 26+. The package is split into two libraries:
+A Swift Package providing reusable SwiftUI components for iOS 18+, macOS 15+, and watchOS 11+. The package is split into two libraries:
 
 - **SharedComponents** — Platform-agnostic views and utilities
 - **UIComponents** — iOS/macOS-specific views (includes UIKit-dependent features)
@@ -163,7 +163,7 @@ A multi-step onboarding wizard with step indicators and animated transitions.
 ## Requirements
 
 - Swift 6.2+
-- iOS 26+ / macOS 26+
+- iOS 18+ / macOS 15+ / watchOS 11+
 
 ## Building & Testing
 
