@@ -37,5 +37,12 @@ let package = Package(
             name: "UIComponentsTests",
             dependencies: ["UIComponents", "SharedComponents"]
         ),
+        // Internal tool (macOS-only, not part of any product) that renders each
+        // documented view to a PNG for README screenshots. Run with `swift run GenerateScreenshots`.
+        .executableTarget(
+            name: "GenerateScreenshots",
+            dependencies: ["UIComponents", "SharedComponents"],
+            path: "Tools/GenerateScreenshots"
+        ),
     ]
 )
