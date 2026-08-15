@@ -17,10 +17,10 @@ swift test --filter UIComponentsTests/testName
 
 ## Architecture
 
-This is a Swift Package (swift-tools-version 6.2) targeting iOS 26+ and macOS 26+. It uses SwiftUI exclusively and produces two libraries:
+This is a Swift Package (swift-tools-version 6.2) targeting iOS 26+, macOS 26+, and watchOS 26+. It uses SwiftUI exclusively and produces two libraries:
 
-- **SharedComponents** — Platform-agnostic SwiftUI views (e.g., `TipOfTheDayView`). No UIKit dependency.
-- **UIComponents** — iOS/macOS SwiftUI views and utilities. Contains components that may use `#if canImport(UIKit)` for platform-specific code (e.g., shake detection). Organized into subdirectories by feature (`Feedback/`, `Wizard/`, `ShakeDetection/`).
+- **SharedComponents** — Platform-agnostic SwiftUI views. No UIKit dependency. Organized into `Models/`, `Services/`, `Views/` (e.g. `ErrorView`, `HeroView`, `LogoVersionView`, `PowerUserView`, `RatingsView`, `StatusBannerView`, `TipOfTheDayView`), and `Resources/` (color assets in `Colors.xcassets`). `CloudSettings.swift` lives at the target root.
+- **UIComponents** — iOS/macOS SwiftUI views and utilities. Contains components that may use `#if canImport(UIKit)` for platform-specific code (e.g., shake detection). Organized into subdirectories by feature (`Feedback/`, `Wizard/`, `ShakeDetection/`); `SemVer.swift` lives at the target root.
 
 Tests live in `UIComponentsTests` and depend on both libraries. The test target uses Swift Testing (`import Testing`, `@Test`), not XCTest.
 
