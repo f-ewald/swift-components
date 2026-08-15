@@ -1,5 +1,9 @@
 # UIComponents
 
+[![Swift Package Manager compatible](https://img.shields.io/badge/SPM-compatible-brightgreen.svg)](https://swift.org/package-manager/)
+[![Latest Release](https://img.shields.io/github/v/tag/f-ewald/swift-components?label=release)](https://github.com/f-ewald/swift-components/releases)
+[![Swift](https://img.shields.io/badge/Swift-6.2-orange.svg)](https://swift.org)
+
 A Swift Package providing reusable SwiftUI components for iOS 18+, macOS 15+, and watchOS 11+. The package is split into two libraries:
 
 - **SharedComponents** — Platform-agnostic views and utilities
