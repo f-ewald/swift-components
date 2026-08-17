@@ -1,0 +1,84 @@
+//
+//  TrainLogo.swift
+//  UIComponents
+//
+//  Created by Friedrich Ewald on 8/17/26.
+//
+
+import SwiftUI
+
+/// A hand-drawn, front-facing train logo built entirely from SwiftUI shapes
+/// (no image assets required). Useful as a brand mark or placeholder icon
+/// for rail-oriented transit apps.
+public struct TrainLogo: View {
+    private var size: CGFloat
+    private var color: Color
+
+    public init(size: CGFloat = 60, color: Color = .red) {
+        self.size = size
+        self.color = color
+    }
+
+    public var body: some View {
+        GeometryReader { geometry in
+            let s = geometry.size.width
+
+            ZStack {
+                // Main train body - front view
+                RoundedRectangle(cornerRadius: s * 0.12)
+                    .fill(color)
+                    .frame(width: s * 0.75, height: s * 0.85)
+
+                // Top rounded roof
+                Circle()
+                    .fill(color)
+                    .frame(width: s * 0.75, height: s * 0.3)
+                    .offset(y: -s * 0.35)
+                    .clipShape(
+                        Rectangle()
+                            .offset(y: -s * 0.15)
+                    )
+
+                // Large front windshield
+                RoundedRectangle(cornerRadius: s * 0.08)
+                    .fill(Color.white.opacity(0.9))
+                    .frame(width: s * 0.55, height: s * 0.35)
+                    .offset(y: -s * 0.15)
+
+                // Side windows
+                HStack(spacing: s * 0.35) {
+                    RoundedRectangle(cornerRadius: s * 0.04)
+                        .fill(Color.white.opacity(0.85))
+                        .frame(width: s * 0.15, height: s * 0.2)
+
+                    RoundedRectangle(cornerRadius: s * 0.04)
+                        .fill(Color.white.opacity(0.85))
+                        .frame(width: s * 0.15, height: s * 0.2)
+                }
+                .offset(y: s * 0.15)
+
+                // Bottom bumper/cowcatcher
+                Path { path in
+                    path.move(to: CGPoint(x: s * 0.125, y: s * 0.5))
+                    path.addLine(to: CGPoint(x: s * 0.2, y: s * 0.48))
+                    path.addLine(to: CGPoint(x: s * 0.8, y: s * 0.48))
+                    path.addLine(to: CGPoint(x: s * 0.875, y: s * 0.5))
+                }
+                .fill(color.opacity(0.8))
+            }
+        }
+        .aspectRatio(1, contentMode: .fit)
+        .frame(width: size, height: size)
+    }
+}
+
+#Preview {
+    VStack(spacing: 30) {
+        TrainLogo(size: 120, color: .red)
+        TrainLogo(size: 100, color: .red)
+        TrainLogo(size: 80, color: .red)
+        TrainLogo(size: 60, color: .red)
+        TrainLogo(size: 40, color: .red)
+    }
+    .padding()
+}

@@ -190,6 +190,39 @@ private func run() {
             .background(Color.white)
     }
 
+    save("Amenities", size: CGSize(width: 260, height: 60)) {
+        Amenities(
+            parkingSpaces: 42,
+            bikeRacks: 12,
+            hasRestrooms: true,
+            hasElevator: true
+        )
+        .padding()
+        .background(Color.white)
+    }
+
+    save("TransitIcons", size: CGSize(width: 220, height: 60)) {
+        HStack {
+            BikeIcon()
+            ParkingIcon()
+            RestroomIcon()
+        }
+        .padding()
+        .background(Color.white)
+    }
+
+    save("ZoneTextView", size: CGSize(width: 140, height: 60)) {
+        ZoneTextView(zone: 2)
+            .padding()
+            .background(Color.white)
+    }
+
+    save("TrainLogo", size: CGSize(width: 180, height: 180)) {
+        TrainLogo(size: 140, color: .red)
+            .padding()
+            .background(Color.white)
+    }
+
     print("Done.")
 }
 

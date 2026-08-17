@@ -220,6 +220,62 @@ VStack {
 .errorAlert(message: $errorMessage)
 ```
 
+### Transit Views
+
+Small, agency-agnostic building blocks for transit apps (stations, stops, fare zones, amenities).
+
+#### Amenities
+
+<img src="docs/screenshots/Amenities.png" alt="Amenities" width="260">
+
+A row of station amenity indicators. Only amenities that are present are shown.
+
+```swift
+Amenities(
+    parkingSpaces: 42,
+    bikeRacks: 12,
+    hasRestrooms: true,
+    hasElevator: true
+)
+```
+
+#### BikeIcon / ParkingIcon / RestroomIcon
+
+<img src="docs/screenshots/TransitIcons.png" alt="BikeIcon, ParkingIcon, RestroomIcon" width="220">
+
+Pill-styled amenity icons, usable on their own or built into custom layouts with the shared `.transitIconStyle()` modifier.
+
+```swift
+HStack {
+    BikeIcon()
+    ParkingIcon()
+    RestroomIcon()
+}
+
+// Or apply the same pill styling to your own content:
+Text("24/7").transitIconStyle()
+```
+
+#### ZoneTextView
+
+<img src="docs/screenshots/ZoneTextView.png" alt="ZoneTextView" width="140">
+
+A pill-styled "Zone N" label for transit systems with zone-based fares.
+
+```swift
+ZoneTextView(zone: 2)
+```
+
+#### TrainLogo
+
+<img src="docs/screenshots/TrainLogo.png" alt="TrainLogo" width="180">
+
+A hand-drawn, front-facing train logo built entirely from SwiftUI shapes — no image assets required. Useful as a brand mark or placeholder icon for rail-oriented transit apps.
+
+```swift
+TrainLogo(size: 80, color: .red)
+```
+
 ## UIComponents
 
 ### FeedbackView / FeedbackService
