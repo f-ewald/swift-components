@@ -24,6 +24,8 @@ This is a Swift Package (swift-tools-version 6.2) targeting iOS 18+, macOS 15+, 
 
 Tests live in `UIComponentsTests` and depend on both libraries. The test target uses Swift Testing (`import Testing`, `@Test`), not XCTest.
 
+`Tools/` holds dev-only executables, not part of any product: `GenerateScreenshots` renders each documented view to a PNG for the README, and `ComponentDocsServer` is a stdio MCP server (`swift run ComponentDocsServer`) exposing `list_components`/`get_component_docs` so agents can discover "which component, and when" without grepping the package by hand. Its docs are a merge of two sources, done in `Tools/ComponentDocsCore` (a library target shared with `UIComponentsTests` so the merge logic is testable): SwiftSyntax-based scanning of `Sources/*` for public `View` types + public `init` signatures (can't drift, since it reads real source), and README.md's existing per-component `##`/`###`/`####` sections (hand-authored prose + usage example, reused rather than duplicated). `UIComponentsTests/ComponentDocsCoverageTests.swift` fails if a public View has no matching README section, which is what keeps that pairing honest — so a new component's README section is not optional, it's required for `swift test` to pass.
+
 ## Conventions
 
 - Views use SwiftUI `#Preview` macros for previewing.
