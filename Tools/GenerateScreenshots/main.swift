@@ -9,17 +9,10 @@
 //  Uses @testable import to construct WizardStep/SemVer, which are internal types
 //  only reachable through WizardService in normal (non-testable) consumer code.
 
+import AppKit
 import SharedComponents
 import SwiftUI
 @testable import UIComponents
-
-// This tool is macOS-only (it uses AppKit to render offscreen windows for
-// screenshots). Guarded so the package's module graph still resolves when
-// Xcode builds for iOS/watchOS destinations — e.g. Canvas previews of
-// SharedComponents/UIComponents views — which otherwise fails with
-// "Unable to resolve module dependency: 'AppKit'" against this target.
-#if os(macOS)
-import AppKit
 
 private let outputDirectory = URL(fileURLWithPath: #filePath)
     .deletingLastPathComponent()  // main.swift -> GenerateScreenshots/
@@ -234,6 +227,3 @@ private func run() {
 }
 
 run()
-#else
-print("GenerateScreenshots only runs on macOS.")
-#endif

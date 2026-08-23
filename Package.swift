@@ -20,11 +20,19 @@ let package = Package(
             name: "UIComponents",
             targets: ["UIComponents"]
         ),
+        // Exposed so the Tools/ package (a separate package — see its own
+        // Package.swift) can consume it as a local dependency for
+        // ComponentDocsServer, without this root package needing to know
+        // about Tools/ at all.
+        .library(
+            name: "ComponentDocsCore",
+            targets: ["ComponentDocsCore"]
+        ),
     ],
     dependencies: [
-        // Only pulled in by the Tools/ComponentDocsServer target below —
-        // SharedComponents/UIComponents themselves stay dependency-free.
-        .package(url: "https://github.com/modelcontextprotocol/swift-sdk.git", from: "0.11.0"),
+        // Needed by the ComponentDocsCore target below to scan SharedComponents/
+        // UIComponents source for public Views. SharedComponents/UIComponents
+        // themselves stay dependency-free.
         .package(url: "https://github.com/swiftlang/swift-syntax.git", from: "600.0.0"),
     ],
     targets: [
@@ -43,34 +51,19 @@ let package = Package(
             name: "UIComponentsTests",
             dependencies: ["UIComponents", "SharedComponents", "ComponentDocsCore"]
         ),
-        // Internal tool (macOS-only, not part of any product) that renders each
-        // documented view to a PNG for README screenshots. Run with `swift run GenerateScreenshots`.
-        .executableTarget(
-            name: "GenerateScreenshots",
-            dependencies: ["UIComponents", "SharedComponents"],
-            path: "Tools/GenerateScreenshots"
-        ),
         // Scans SharedComponents/UIComponents source for public Views and merges
-        // it with README.md's hand-authored prose/examples. Shared by the MCP
-        // server below and by UIComponentsTests' doc-coverage check.
+        // it with README.md's hand-authored prose/examples. Shared by
+        // Tools/ComponentDocsServer (a separate package) and by
+        // UIComponentsTests' doc-coverage check. Lives here, rather than in
+        // Tools/, so this root package's own graph never includes an
+        // executable target — see Tools/Package.swift for why that matters.
         .target(
             name: "ComponentDocsCore",
             dependencies: [
                 .product(name: "SwiftSyntax", package: "swift-syntax"),
                 .product(name: "SwiftParser", package: "swift-syntax"),
             ],
-            path: "Tools/ComponentDocsCore"
-        ),
-        // MCP server exposing swift-components' public Views to agents:
-        // `list_components` / `get_component_docs`. Run with
-        // `swift run ComponentDocsServer` (stdio transport).
-        .executableTarget(
-            name: "ComponentDocsServer",
-            dependencies: [
-                "ComponentDocsCore",
-                .product(name: "MCP", package: "swift-sdk"),
-            ],
-            path: "Tools/ComponentDocsServer"
+            path: "Sources/ComponentDocsCore"
         ),
     ]
 )

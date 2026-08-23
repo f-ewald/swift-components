@@ -38,6 +38,10 @@ jobs:
         if: matrix.platform == 'macOS'
         run: swift test
 
+      - name: Swift build Tools (macOS)
+        if: matrix.platform == 'macOS'
+        run: swift build --package-path Tools
+
       - name: Build for ${{ matrix.platform }}
         if: matrix.platform != 'macOS'
         run: |
