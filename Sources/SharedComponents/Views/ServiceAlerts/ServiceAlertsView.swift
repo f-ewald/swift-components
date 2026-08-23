@@ -40,7 +40,9 @@ public struct ServiceAlertsView: View {
                 ServiceAlertRow(alert: alert)
             }
             .buttonStyle(.plain)
+            #if os(iOS) || os(macOS)
             .listRowSeparator(.hidden)
+            #endif
         }
 
         if alerts.count > visibleCount {
@@ -50,7 +52,9 @@ public struct ServiceAlertsView: View {
                     .foregroundStyle(.secondary)
             }
             .buttonStyle(.plain)
+            #if os(iOS) || os(macOS)
             .listRowSeparator(.hidden)
+            #endif
         }
     }
 }

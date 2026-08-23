@@ -27,7 +27,9 @@ public struct AllServiceAlertsView: View {
                     ServiceAlertRow(alert: alert)
                 }
                 .buttonStyle(.plain)
+                #if os(iOS) || os(macOS)
                 .listRowSeparator(.hidden)
+                #endif
             }
         }
     }
