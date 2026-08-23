@@ -46,7 +46,10 @@ public final class SystemLocationProvider: NSObject, LocationProviding, @uncheck
         if let backgroundModes = Bundle.main.object(forInfoDictionaryKey: "UIBackgroundModes") as? [String],
            backgroundModes.contains("location") {
             manager.allowsBackgroundLocationUpdates = true
+            // Unavailable on watchOS — there's no equivalent auto-pause behavior to opt out of.
+            #if !os(watchOS)
             manager.pausesLocationUpdatesAutomatically = false
+            #endif
         }
     }
 

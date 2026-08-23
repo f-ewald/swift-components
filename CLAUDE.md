@@ -13,6 +13,11 @@ swift test
 
 # Run a single test
 swift test --filter UIComponentsTests/testName
+
+# Before tagging a release: build every release platform (macOS, iOS, watchOS)
+# the same way CI does, so a platform-specific API-availability error (e.g. an
+# API unavailable on watchOS) is caught locally instead of only in CI.
+Scripts/verify-release.sh
 ```
 
 ## Architecture
