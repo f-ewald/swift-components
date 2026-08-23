@@ -8,7 +8,7 @@
 import SwiftUI
 
 /// Severity of a ``ServiceAlert``, driving its color/icon/label wherever it's displayed.
-public enum ServiceAlertSeverity: Sendable {
+public enum ServiceAlertSeverity: Sendable, Hashable {
     /// A critical disruption — no service, significant delays, accident, strike, medical emergency.
     case disruption
     /// A non-critical issue — minor delays, reduced service, detour, accessibility issue.
@@ -37,7 +37,7 @@ public enum ServiceAlertSeverity: Sendable {
 }
 
 /// A single transit service alert, agnostic of the API/feed format it was decoded from.
-public struct ServiceAlert: Identifiable, Sendable {
+public struct ServiceAlert: Identifiable, Sendable, Hashable {
     public let id: String
     public let severity: ServiceAlertSeverity
     public let header: String
