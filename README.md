@@ -220,6 +220,61 @@ VStack {
 .errorAlert(message: $errorMessage)
 ```
 
+### Service Alerts
+
+A closure-driven, unopinionated set of views for showing transit service alerts —
+navigation/presentation (push, sheet, etc.) is left entirely to the host app.
+
+#### ServiceAlertsView
+
+<img src="docs/screenshots/ServiceAlertsView.png" alt="ServiceAlertsView" width="340">
+
+Displays up to `visibleCount` alerts inline (default 2) with a "See all N alerts" row when more exist; designed to be spliced directly into a `List`/`Section` or a plain `VStack`.
+
+```swift
+List {
+    Section("Alerts") {
+        ServiceAlertsView(
+            alerts: alerts,
+            onSelectAlert: { alert in selectedAlert = alert },
+            onShowAllAlerts: { showAllAlerts = true }
+        )
+    }
+}
+```
+
+#### ServiceAlertRow
+
+<img src="docs/screenshots/ServiceAlertRow.png" alt="ServiceAlertRow" width="320">
+
+A single alert row with a severity icon, header, and severity badge.
+
+```swift
+ServiceAlertRow(alert: alert)
+```
+
+#### AllServiceAlertsView
+
+<img src="docs/screenshots/AllServiceAlertsView.png" alt="AllServiceAlertsView" width="340">
+
+A full scrollable list of every alert, for when there are more than fit inline.
+
+```swift
+AllServiceAlertsView(alerts: alerts) { alert in
+    selectedAlert = alert
+}
+```
+
+#### ServiceAlertDetailView
+
+<img src="docs/screenshots/ServiceAlertDetailView.png" alt="ServiceAlertDetailView" width="340">
+
+Full detail content for a single alert, including its optional "More Information" link.
+
+```swift
+ServiceAlertDetailView(alert: alert)
+```
+
 ### Transit Views
 
 Small, agency-agnostic building blocks for transit apps (stations, stops, fare zones, amenities).

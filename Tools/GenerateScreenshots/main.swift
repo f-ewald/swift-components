@@ -116,6 +116,38 @@ private struct StatusBannerDemo: View {
     }
 }
 
+private let demoAlerts: [ServiceAlert] = [
+    ServiceAlert(
+        id: "1",
+        severity: .disruption,
+        header: "Delayed: Train 114 southbound is running about 30 minutes late.",
+        description: "The following stops may also be affected: Palo Alto."
+    ),
+    ServiceAlert(
+        id: "2",
+        severity: .warning,
+        header: "Accessibility: Southbound elevator out of service at Bayshore.",
+        description: ""
+    ),
+    ServiceAlert(
+        id: "3",
+        severity: .warning,
+        header: "Minor delays systemwide.",
+        description: ""
+    ),
+]
+
+private struct ServiceAlertRowDemo: View {
+    var body: some View {
+        VStack(spacing: 8) {
+            ServiceAlertRow(alert: demoAlerts[0])
+            ServiceAlertRow(alert: demoAlerts[1])
+        }
+        .padding()
+        .background(Color.white)
+    }
+}
+
 @MainActor
 private func run() {
     // Named colors from Colors.xcassets don't resolve reliably in a bare CLI
@@ -220,6 +252,32 @@ private func run() {
     save("TrainLogo", size: CGSize(width: 180, height: 180)) {
         TrainLogo(size: 140, color: .red)
             .padding()
+            .background(Color.white)
+    }
+
+    save("ServiceAlertRow", size: CGSize(width: 320, height: 100)) {
+        ServiceAlertRowDemo()
+    }
+
+    // List/ScrollView-backed views don't render reliably via plain ImageRenderer
+    // (produces a blank or "content unavailable" result) — same AppKit-hosting
+    // quirk saveViaWindow already exists for.
+    saveViaWindow("ServiceAlertsView", size: CGSize(width: 340, height: 220)) {
+        List {
+            Section("Alerts") {
+                ServiceAlertsView(alerts: demoAlerts, onSelectAlert: { _ in }, onShowAllAlerts: {})
+            }
+        }
+        .background(Color.white)
+    }
+
+    saveViaWindow("AllServiceAlertsView", size: CGSize(width: 340, height: 260)) {
+        AllServiceAlertsView(alerts: demoAlerts, onSelectAlert: { _ in })
+            .background(Color.white)
+    }
+
+    saveViaWindow("ServiceAlertDetailView", size: CGSize(width: 340, height: 260)) {
+        ServiceAlertDetailView(alert: demoAlerts[0])
             .background(Color.white)
     }
 
