@@ -275,6 +275,43 @@ Full detail content for a single alert, including its optional "More Information
 ServiceAlertDetailView(alert: alert)
 ```
 
+### LocationTracker
+
+An `@Observable`, `@MainActor` class for tracking a device's location over time. Every location received while tracking is appended to `locations`; read `.first`/`.last` for the oldest/most-recent fix. Requesting permission is a separate, explicit step from starting tracking, so you can prompt at the right moment in your UI flow.
+
+```swift
+struct MapScreen: View {
+    @State private var tracker = LocationTracker()
+
+    var body: some View {
+        VStack {
+            if tracker.authorizationStatus == .notDetermined {
+                Button("Enable Location") {
+                    Task { await tracker.requestAuthorization() }
+                }
+            }
+            Text("\(tracker.locations.count) points tracked")
+        }
+        .onAppear { tracker.start() }
+        .onDisappear { tracker.stop() }
+    }
+}
+```
+
+Consuming apps must add `NSLocationWhenInUseUsageDescription` to their own Info.plist — this package can't do that for them.
+
+### Geocoder
+
+A stateless wrapper around reverse geocoding, returning a plain `Address` value instead of `CLPlacemark`.
+
+```swift
+let geocoder = Geocoder()
+let address = try await geocoder.reverseGeocode(
+    coordinate: CLLocationCoordinate2D(latitude: 37.3349, longitude: -122.0090)
+)
+print(address.locality ?? "", address.administrativeArea ?? "")
+```
+
 ### Transit Views
 
 Small, agency-agnostic building blocks for transit apps (stations, stops, fare zones, amenities).
