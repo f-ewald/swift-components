@@ -50,7 +50,8 @@ public struct AllServiceAlertsView: View {
                 id: "2",
                 severity: .warning,
                 header: "Accessibility: Southbound elevator out of service at Bayshore.",
-                description: ""
+                description: "",
+                tags: ["Bayshore", "Info"]
             ),
             ServiceAlert(
                 id: "3",

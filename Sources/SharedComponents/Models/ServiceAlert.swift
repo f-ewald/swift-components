@@ -43,18 +43,24 @@ public struct ServiceAlert: Identifiable, Sendable, Hashable {
     public let header: String
     public let description: String
     public let url: URL?
+    /// Optional classification labels (e.g. an extracted train number or
+    /// notification type) supplied by the caller, typically produced by an
+    /// external ML pipeline. Agnostic of how they were derived.
+    public let tags: [String]
 
     public init(
         id: String,
         severity: ServiceAlertSeverity,
         header: String,
         description: String,
-        url: URL? = nil
+        url: URL? = nil,
+        tags: [String] = []
     ) {
         self.id = id
         self.severity = severity
         self.header = header
         self.description = description
         self.url = url
+        self.tags = tags
     }
 }

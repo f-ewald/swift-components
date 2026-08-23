@@ -247,10 +247,21 @@ List {
 
 <img src="docs/screenshots/ServiceAlertRow.png" alt="ServiceAlertRow" width="320">
 
-A single alert row with a severity icon, header, and severity badge.
+A single alert row with a severity icon, header, and severity badge. If `alert.tags`
+is non-empty (e.g. a train number or notification type extracted by an external ML
+classifier), a sparkles-prefixed row of tag pills is shown below the severity badge.
 
 ```swift
 ServiceAlertRow(alert: alert)
+
+// With ML-classified tags:
+ServiceAlertRow(alert: ServiceAlert(
+    id: alert.id,
+    severity: alert.severity,
+    header: alert.header,
+    description: alert.description,
+    tags: ["Train 114", "Delay"]
+))
 ```
 
 #### AllServiceAlertsView
