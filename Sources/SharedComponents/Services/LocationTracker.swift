@@ -39,6 +39,15 @@ public final class SystemLocationProvider: NSObject, LocationProviding, @uncheck
     override public init() {
         super.init()
         manager.delegate = self
+
+        // Only opt in to background delivery if the host app has actually
+        // declared the "location" background mode — setting
+        // `allowsBackgroundLocationUpdates` without it throws at runtime.
+        if let backgroundModes = Bundle.main.object(forInfoDictionaryKey: "UIBackgroundModes") as? [String],
+           backgroundModes.contains("location") {
+            manager.allowsBackgroundLocationUpdates = true
+            manager.pausesLocationUpdatesAutomatically = false
+        }
     }
 
     public var authorizationStatus: CLAuthorizationStatus {
