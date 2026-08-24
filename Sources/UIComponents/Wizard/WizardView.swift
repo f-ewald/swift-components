@@ -38,17 +38,28 @@ public struct WizardView: View {
     ///     - gradientColors: Default colors if none are given
     ///     - onComplete: Callback that is called after the wizard completes
     public init(steps: [WizardStep], gradientColors: [Color]? = nil, onComplete: @escaping () -> Void) {
-        // Safeguard against not defined steps
-        if steps.count == 0 {
-            self.steps = [WizardStep(title: "ERROR", subtitle: "No steps are defined. Please define them in wizard.json", imageName: "exclamationmark.triangle", buttonLabel: "OK", version: SemVer("0.0.1")!)]
-        } else {
-            self.steps = steps
-        }
+        self.steps = steps
         self.gradientColors = gradientColors ?? [.blue, .purple]
         self.onComplete = onComplete
     }
     
     public var body: some View {
+        if steps.isEmpty {
+            #if DEBUG
+            // Surface a visible diagnostic in debug builds only — an empty `steps`
+            // array reaching WizardView usually means wizard.json is missing/malformed
+            // or the version filter is misconfigured, and that shouldn't fail silently
+            // during development. Release builds fall through to EmptyView() below.
+            emptyStateDebugView
+            #else
+            EmptyView()
+            #endif
+        } else {
+            content
+        }
+    }
+    
+    private var content: some View {
         ZStack(alignment: .bottom) {
             // Content
             VStack(spacing: 32) {
@@ -125,6 +136,39 @@ public struct WizardView: View {
             .padding()
         }
     }
+    
+    #if DEBUG
+    /// Debug-only diagnostic screen shown when `steps` is empty — never compiled
+    /// into release builds. Dismissing it calls `onComplete()`, same as a normal
+    /// wizard completion, so a host app testing this path still unwinds cleanly.
+    private var emptyStateDebugView: some View {
+        VStack(spacing: 24) {
+            Image(systemName: "exclamationmark.triangle")
+                .resizable()
+                .scaledToFit()
+                .frame(height: 120)
+                .foregroundStyle(.yellow)
+            
+            VStack(spacing: 12) {
+                Text("WizardView: No Steps")
+                    .font(.title.bold())
+                    .multilineTextAlignment(.center)
+                
+                Text("WizardView received an empty steps array. Check that wizard.json exists, decodes successfully, and that WizardService's version filtering isn't excluding everything. This screen only appears in debug builds.")
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+            }
+            
+            Button("OK") {
+                onComplete()
+            }
+            .modifier(WizardButtonStyleModifier())
+        }
+        .padding()
+    }
+    #endif
 }
 
 /// Applies Liquid Glass styling on iOS/macOS/watchOS 26+, falling back to

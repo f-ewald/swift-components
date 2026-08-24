@@ -447,7 +447,7 @@ Bundle a `wizard.json` file in your app:
 }
 ```
 
-`version` marks the app version a step was introduced in — `WizardService.loadSteps()` only returns steps at or above the last version the user has seen, so re-showing the wizard after an update surfaces just what's new. `imageName` is optional.
+`version` marks the app version a step was introduced in — `WizardService.loadSteps()` only returns steps strictly newer than the last version the user has seen and no newer than the current app version, so re-showing the wizard after an update surfaces just what's new (and never a not-yet-released step). `imageName` is optional.
 
 ```swift
 struct ContentView: View {
@@ -467,7 +467,11 @@ struct ContentView: View {
 }
 ```
 
+`shouldShowWizard()` returns `true` only when the app version changed **and** there are matching steps to show. If it returns `false` because a release has no new steps, it also calls `markCurrentVersionAsSeen()` for you, so the check won't keep re-running (and re-decoding `wizard.json`) on every subsequent launch — you only need to call `markCurrentVersionAsSeen()` yourself from `onComplete`, as shown above.
+
 `gradientColors` is an optional array of `Color` for the step icon's gradient (defaults to blue/purple).
+
+If `WizardView` is ever given an empty `steps` array (e.g. `wizard.json` is missing/malformed, or `WizardService`'s version filter excludes everything), it renders nothing (`EmptyView()`) in release builds. In `#if DEBUG` builds only, it instead shows a diagnostic screen explaining the empty-steps condition, so misconfiguration is caught during development rather than silently skipped — this debug-only screen is compiled out of release builds entirely.
 
 ## Requirements
 

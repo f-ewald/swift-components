@@ -10,9 +10,12 @@ import Foundation
 public struct WizardService {
     private static let lastSeenVersionKey = "lastSeenAppVersion"
 
-    /// Returns true if the WizardView should be shown.
-    /// If the Wizard has never been shown, true will be returned.
-    public static func shouldShowWizard() -> Bool {
+    /// Returns true if the WizardView should be shown, i.e. the app version changed
+    /// since last seen **and** there are steps newer than what the user has already
+    /// seen. If it returns `false` because there are no matching steps, this also
+    /// advances `lastSeenAppVersion` as a side effect, so the check doesn't keep
+    /// re-running (and re-decoding `wizard.json`) on every subsequent launch.
+    public static func shouldShowWizard(bundle: Bundle = .main) -> Bool {
         let currentVersion: SemVer = currentAppVersion()
         let lastSeen = UserDefaults.standard.string(forKey: lastSeenVersionKey)
         
@@ -20,45 +23,55 @@ public struct WizardService {
         print("Current app version is \(currentVersion) and last seen version is \(lastSeen ?? "unknown")")
         #endif
         
-        return lastSeen != String(describing: currentVersion)
+        let versionChanged = lastSeen != String(describing: currentVersion)
+        let hasNewSteps = !loadSteps(bundle: bundle).isEmpty
+        
+        if versionChanged && !hasNewSteps {
+            markCurrentVersionAsSeen()
+        }
+        
+        return versionChanged && hasNewSteps
     }
     
-    /// Load steps equal or greater than current version
-    public static func loadSteps() -> [WizardStep] {
+    /// Load steps strictly newer than `lastSeenAppVersion` and no newer than the
+    /// current app version. A missing or malformed `wizard.json` is treated as
+    /// "nothing new" and returns `[]`; use `loadStepsOrThrow(bundle:)` if you need
+    /// to distinguish a decode failure from that legitimate empty result.
+    public static func loadSteps(bundle: Bundle = .main) -> [WizardStep] {
+        (try? loadStepsOrThrow(bundle: bundle)) ?? []
+    }
+
+    /// Like `loadSteps(bundle:)`, but throws when `wizard.json` exists and fails to
+    /// decode, instead of silently returning `[]`. A `wizard.json` that isn't
+    /// bundled at all is not an error — that case still returns `[]`.
+    public static func loadStepsOrThrow(bundle: Bundle = .main) throws -> [WizardStep] {
         let minStepVersion: SemVer = lastSeenVersion()
+        let currentVersion: SemVer = currentAppVersion()
         
-        guard let url = Bundle.main.url(forResource: "wizard", withExtension: "json") else {
+        guard let url = bundle.url(forResource: "wizard", withExtension: "json") else {
             #if DEBUG
-            print("Unable to load wizard.json from main bundle")
+            print("Unable to load wizard.json from bundle")
             #endif
             
             return []
         }
         
-        do {
-            let data = try Data(contentsOf: url)
-            let decoder = JSONDecoder()
-            let wizardContainer = try decoder.decode(WizardContainer.self, from: data)
-            
-            let filteredSteps = wizardContainer.steps.filter {
-                #if DEBUG
-                print("Comparing \($0.version) to \(minStepVersion)")
-                #endif
-                return $0.version >= minStepVersion
-            }
-            
+        let data = try Data(contentsOf: url)
+        let decoder = JSONDecoder()
+        let wizardContainer = try decoder.decode(WizardContainer.self, from: data)
+        
+        let filteredSteps = wizardContainer.steps.filter {
             #if DEBUG
-            print("Loaded \(wizardContainer.steps.count) steps, after filtering \(filteredSteps.count) steps")
+            print("Comparing \($0.version) to \(minStepVersion)")
             #endif
-            
-            return filteredSteps
-        } catch {
-            #if DEBUG
-            print(error)
-            #endif
+            return $0.version > minStepVersion && $0.version <= currentVersion
         }
         
-        return []
+        #if DEBUG
+        print("Loaded \(wizardContainer.steps.count) steps, after filtering \(filteredSteps.count) steps")
+        #endif
+        
+        return filteredSteps
     }
 
     /// Call this after the What's New screen has been presented.
