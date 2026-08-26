@@ -19,6 +19,12 @@ public protocol LocationProviding: Sendable {
     /// already determined.
     func requestWhenInUseAuthorization() async -> CLAuthorizationStatus
 
+    /// Requests the "Always" authorization upgrade and suspends until the
+    /// user responds. Only prompts when status is `.notDetermined` or
+    /// `.authorizedWhenInUse`; resolves immediately with the current status
+    /// otherwise.
+    func requestAlwaysAuthorization() async -> CLAuthorizationStatus
+
     /// Starts a fresh stream of location updates. Ends when ``stopUpdates()``
     /// is called.
     func locationUpdates() -> AsyncThrowingStream<CLLocation, Error>
@@ -66,6 +72,26 @@ public final class SystemLocationProvider: NSObject, LocationProviding, @uncheck
             authorizationContinuation = continuation
             lock.unlock()
             manager.requestWhenInUseAuthorization()
+        }
+    }
+
+    public func requestAlwaysAuthorization() async -> CLAuthorizationStatus {
+        // `.authorizedWhenInUse` doesn't exist as an authorization tier on
+        // macOS — only the `.notDetermined` half of this guard applies there.
+        #if os(macOS)
+        guard manager.authorizationStatus == .notDetermined else {
+            return manager.authorizationStatus
+        }
+        #else
+        guard manager.authorizationStatus == .notDetermined || manager.authorizationStatus == .authorizedWhenInUse else {
+            return manager.authorizationStatus
+        }
+        #endif
+        return await withCheckedContinuation { continuation in
+            lock.lock()
+            authorizationContinuation = continuation
+            lock.unlock()
+            manager.requestAlwaysAuthorization()
         }
     }
 
@@ -146,6 +172,13 @@ public final class LocationTracker {
     /// by ``start()``.
     public func requestAuthorization() async {
         authorizationStatus = await provider.requestWhenInUseAuthorization()
+    }
+
+    /// Requests the "Always" authorization upgrade, e.g. right before
+    /// starting a recording that needs to keep tracking in the background.
+    /// Not called implicitly by ``start()``.
+    public func requestAlwaysAuthorization() async {
+        authorizationStatus = await provider.requestAlwaysAuthorization()
     }
 
     /// Begins appending incoming locations to ``locations``. No-op if

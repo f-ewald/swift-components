@@ -24,6 +24,11 @@ final class MockLocationProvider: LocationProviding, @unchecked Sendable {
         return authorizationStatus
     }
 
+    func requestAlwaysAuthorization() async -> CLAuthorizationStatus {
+        authorizationStatus = authorizationStatusAfterRequest
+        return authorizationStatus
+    }
+
     func locationUpdates() -> AsyncThrowingStream<CLLocation, Error> {
         AsyncThrowingStream { continuation in
             self.continuation = continuation
@@ -108,4 +113,20 @@ private func waitUntil(
 
     #expect(tracker.authorizationStatus == .authorizedAlways)
     #expect(tracker.locations.isEmpty)
+}
+
+@MainActor
+@Test func testRequestAlwaysAuthorizationUpdatesAuthorizationStatus() async throws {
+    let provider = MockLocationProvider(
+        locationsToYield: [],
+        initialAuthorizationStatus: .notDetermined,
+        authorizationStatusAfterRequest: .authorizedAlways
+    )
+    let tracker = LocationTracker(provider: provider)
+
+    #expect(tracker.authorizationStatus == .notDetermined)
+
+    await tracker.requestAlwaysAuthorization()
+
+    #expect(tracker.authorizationStatus == .authorizedAlways)
 }
